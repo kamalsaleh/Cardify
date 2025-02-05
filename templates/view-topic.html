@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  <title>Deck: {{ topic.title }}</title>
+{% endblock %}
+
+{% block content %}
+  
+  <h2 class="mt-4"><strong>View Topic: &#x201C;{{ topic.id }}&#x201D;</strong></h2>
+  <hr>
+  
+  <div class="card topictitle">
+    <div class="card-header topictitle">{{ topic.title }}</div>
+    
+      {% if topic.suptopics() %}
+        <div class="card-text">
+          <strong>Parent Topics:</strong>
+          {% for parent_topic in topic.suptopics() %}
+          <a href="{{ url_for('view_topic', id=parent_topic.id) }}" style="text-decoration: none;">{{ parent_topic.title }}</a>
+          {% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    
+  </div>
+  
+  <div class="buttons-container">
+        
+    <button type="submit" class="button view" title="View topic graph" onclick="location.href='{{ url_for('topic_graph', id=topic.id) }}'">
+      <i class="fa-solid fa-circle-nodes"></i>
+    </button>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+    <button type="submit" class="button update" title="Edit topic" onclick="location.href='{{ url_for('edit_topic', id=topic.id) }}'">
+      <i class="fas fa-edit"></i>
+    </button>
+    
+    <form action="{{ url_for('delete_topic', id=topic.id) }}" method="POST" onsubmit="return confirmDelete();">
+        <button type="submit" class="button delete" title="Delete topic">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+    </form>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+    <button class="button extend" onclick="addSuptopic()" title="Add a parent topic">
+      <i class="fas fa-plus"></i>
+    </button>
+    <select id="topicSelect1">
+      <option value=0>---</option>
+      {% for topic in fiesible_suptopics %}
+        <option value="{{ topic.id }}">{{ topic.title }}</option>
+      {% endfor %}
+    </select>
+    
+    <button class="button drop" onclick="dropSuptopic()" title="Drop a parent topic">
+      <i class="fas fa-minus"></i>
+    </button>
+    <select id="topicSelect2">
+      <option value=0>---</option>
+      {% for topic in suptopics %}
+        <option value="{{ topic.id }}">{{ topic.title }}</option>
+      {% endfor %}
+    </select>
+    
+  </div>
+  <hr>
+  
+  <!--
+  List all tags associated with the topic and provid a button to remove topic-tag associations
+  -->
+  
+  <div style="display: flex; align-items: center; justify-content: flex-start; gap: 0px;">
+    <p style="margin: 0;">
+      Contains <strong>{{ topic.decks|length }} Deck(s)</strong> with a total of <strong>{{ topic.flashcards()|length }} Flashcard(s)</strong>.
+    </p>
+  </div>
+  <br>
+  <div class=list-group>
+    {% for deck in topic.decks %}
+    <a href="{{ url_for('view_deck', id=deck.id) }}"
+       class="list-group-item list-group-item-action py-1 px-3"
+       style="border: 1px solid black">
+      <div class="d-flex w-100 justify-content-between">
+        <strong>{{ deck.title|safe }}</strong>
+      </div>
+      <small class="text-dark">{{ deck.total() }} Flashcards</small>
+    </a>
+    {% endfor %}
+  </div>
+  
+  <script>
+    addSuptopic = async () => {
+    
+      var suptopic_id = document.getElementById("topicSelect1").value;
+      
+      if (suptopic_id == 0) {
+        alert("Please select a topic to be set as parent");
+        return;
+      }
+      
+      var url = "/add-subtopic/" + suptopic_id + "/" + {{ topic.id }};
+      
+      const response = await fetch(url, {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert("Failed to add a new parent topic.");
+      }
+      
+    }
+    
+    dropSuptopic = async () => {
+    
+      var suptopic_id = document.getElementById("topicSelect2").value;
+      
+      if (suptopic_id == 0) {
+        alert("Please select a topic to be dropped as parent");
+        return;
+      }
+      
+      var url = "/delete-subtopic/" + suptopic_id + "/" + {{ topic.id }};
+      
+      const response = await fetch(url, {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert("Failed to drop a parent topic.");
+      }
+      
+    }
+  </script>
+  
+{% endblock %}

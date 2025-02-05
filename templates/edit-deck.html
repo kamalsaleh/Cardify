@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>{{ header|safe }}</title>
+{% endblock %}
+
+{% block content %}
+  <h2 class="mt-4"><strong>{{ header|safe }}</strong></h2>
+  <hr>
+  
+  <form method="POST">
+      {{ form.hidden_tag() }}
+      
+      <div title="The name of the deck">
+        <div class="card-header decktitle">{{ form.TITLE.label(class="form-label") }}</div>
+        {{ form.TITLE(class="form-control", style="border-radius: 0px;") }}
+      </div>
+      <br>
+      
+      <div title="The description of the deck">
+        <div class="card-header decktitle">{{ form.DESCRIPTION.label(class="form-label") }}</div>
+        {{ form.DESCRIPTION(class="form-control", style="border-radius: 0px;") }}
+      </div>
+      <br>
+      
+      <div title="The topic of the deck">
+        <div class="card-header decktitle">{{ form.TOPIC_ID.label(class="form-label") }}</div>
+        {{ form.TOPIC_ID(class="form-select", style="border-radius: 0px;") }}
+      </div>
+      <br>
+      
+      <button type="submit" class="button custom-submit" title="Submit">
+        {{ form.SUBMIT.label }}
+      </button>
+  </form>
+{% endblock %}

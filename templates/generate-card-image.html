@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  <title>{{ header|safe }}</title>
+{% endblock %}
+
+{% block content %}
+  
+    <h3 class="mt-4"><strong>Generate Image for Card &#x201C;{{ flashcard.id }}&#x201D;</strong></h3>
+    <hr>
+    
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      {{ form.csrf_token }}
+      
+      <div class="form-group">
+        {{ form.CARD_AS_CONTEXT.label(class="form-label") }}
+        {{ form.CARD_AS_CONTEXT(class="form-check-input") }}
+      </div>
+      
+      <div title="The title of the card">
+        <div class="card-header">
+          {{ form.PROMPT.label(class="form-label") }}
+        </div>
+        {{ form.PROMPT(class="form-control auto-expand", style="border-radius: 0px; min-height: 150px;", placeholder="Enter a prompt to generate the image of the card") }}
+      </div>
+      
+      <br>
+      <button type="submit" class="button custom-submit" title="Submit">
+        {{ form.SUBMIT.label }}
+      </button>
+    </form>
+      
+{% endblock %}

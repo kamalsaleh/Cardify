@@ -1,0 +1,6 @@
+keys.py
+instance/*
+static/images/*
+static/gen_images/*
+static/backups/*
+static/py/*

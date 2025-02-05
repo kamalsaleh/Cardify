@@ -1,0 +1,438 @@
+body {
+  font-family: 'Patrick Hand', Arial, sans-serif;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #edfafb;
+}
+
+/* Logo styling */
+.navbar-logo img {
+  height: 45px; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
+/* Logo styling */
+.navbar-item img {
+  height: 35px; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
+/* Quill editor styling */
+.ql-editor {
+  font-size: 1.2em;
+  line-height: 1.5;
+  font-family: 'Patrick Hand', Arial, sans-serif;
+}
+
+/* Quill editor styling */
+.ql-editor.flashcard {
+  white-space: normal;
+  padding: 5px 5px;
+}
+
+.ql-toolbar.ql-snow {
+  padding: 2px 2px;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: left;
+  position: relative;
+  margin-top: 0px;
+  z-index: 5;
+}
+
+.buttons-container button {
+  margin: 0 2px; /* Adjust this value to control spacing */
+}
+
+.button {
+  padding: 2px 10px;
+  font-size: 1em;
+  border: 1px solid gray;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2); /* Adds a soft shadow */
+}
+
+.button.yellow {
+  background-color: #bdbd16;
+  color: white;
+}
+
+.button.yellow img {
+  height: 25px; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
+.button.yellow:hover {
+  background-color: #9b9d25;
+  transform: translateY(-2px);
+}
+
+.button.extend {
+  background-color: #42ae1b;
+  color: white;
+}
+
+.button.extend img {
+  height: 25px; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
+.button.extend:hover {
+  background-color: #0c8338;
+  transform: translateY(-2px);
+}
+
+.button.view {
+  background-color:#cc00cc;
+  color: white;
+}
+
+.button.view img {
+  height: 25px; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
+.button.view:hover {
+  background-color:#9f029f;
+  transform: translateY(-2px);
+}
+
+.button.update {
+  background-color: #1990e5;
+  color: white;
+}
+
+.button.update img {
+  height: 25px; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
+.button.update:hover {
+  background-color: #084794;
+  transform: translateY(-2px);
+}
+
+.button.delete {
+  background-color: #e41818;
+  color: white;
+}
+
+.button.delete:hover {
+background-color: #c40303;
+transform: translateY(-2px);
+}
+
+.button.drop {
+  background-color: #f4bd6a;
+  color: white;
+}
+
+.button.drop:hover {
+background-color: #cb9201;
+transform: translateY(-2px);
+}
+
+.button.deselect {
+  background-color: #efd494;
+  color: white;
+}
+
+button.deselect img {
+  height: 25px; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+}
+
+.button.deselect:hover {
+background-color: #d09d1c;
+transform: translateY(-2px);
+}
+
+.button.custom-submit {
+  content: 'Submit';
+  background-color: rgb(44, 142, 175);
+  color: white;
+}
+
+.button.custom-submit:hover {
+  background-color: #05499c;
+  transform: translateY(-2px);
+}
+
+.button.next {
+  background-color: lightblue;
+  margin-left: 10px;
+}
+
+.button.next:hover {
+  background-color: rgb(112, 202, 232);
+  transform: translateY(-2px);
+}
+
+.button.prev {
+  background-color: lightblue;
+  margin-right: 10px;
+}
+
+.button.prev:hover {
+  background-color: rgb(112, 202, 232);
+  transform: translateY(-2px);
+}
+
+.flashcard-with-select-checkbox {
+  display: flex;
+}
+
+.flashcard-with-select-checkbox h5 {
+  margin-right: auto; /* Removes default margin */
+}
+
+.flashcard-with-select-checkbox input[type="checkbox"] {
+  margin-left: auto; /* Pushes the checkbox to the far right */
+}
+
+.card-container {
+  display: flex;
+  align-items: flex-start; /* Align items at the top */
+  gap: 20px; /* Space between image and card */
+}
+
+.image-container {
+  position: relative; /* Ensure the image and button are stacked on top of each other */
+}
+
+.flashcard-details {
+  width: 100%; /* Allow the text to take up remaining space */
+  display: flex; /* Align image and info horizontally */
+  align-items: flex-start; /* Align items at the top */
+  gap: 20px; /* Space between the image and text */
+}
+
+.image-wrapper img {
+  max-width: 300px; /* Limit the image width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Add rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the image */
+}
+
+.info-wrapper {
+  max-width: 100%; /* Allow the text to wrap properly */
+  line-height: 1.5; /* Improve readability */
+}
+
+.info-wrapper .text-muted {
+  font-size: 0.9rem; /* Slightly smaller font for metadata */
+  color: #6c757d; /* Muted gray color for metadata */
+}
+
+.info-wrapper strong {
+  font-weight: bold; /* Emphasize strong text */
+}
+
+
+.toggle-button {
+  margin-bottom: 10px; /* Space between button and image */
+  padding: 2px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  font-size: 0.8em;
+  /*text-transform: uppercase;*/
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1; /* Keep button above image */
+  width: 150px; /* Set a constant width */
+}
+
+.toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.card-wrapper {
+  perspective: 100000px;
+  position: relative;
+}
+
+.card {
+  display: inline-block; /* Ensure the card wraps its content */
+  width: 100%; /* Allow the card to grow/shrink based on content */
+  max-width: 100%; /* Optional: Prevent the card from becoming too wide */
+  margin: 10px auto; /* Center the card and add some spacing */
+  padding: 10px; /* Add padding inside the card */
+  background-color: #eff1f3; /* Light background for contrast */
+  border: 1px solid rgb(45, 137, 69); /* Subtle border for structure */
+  border-radius: 8px; /* Rounded corners for a polished look */
+  box-shadow: 8px 4px 8px rgba(22, 22, 22, 0.1); /* Subtle shadow for depth */
+}
+
+.card.decktitle {
+  border: 1px solid  rgb(81, 190, 240); /* Subtle border for structure */
+}
+
+.card.topictitle {
+  border: 1px solid rgb(176, 185, 3); /* Subtle border for structure */
+}
+
+.card-header {
+  font-size: 1.4rem; /* Larger font size for the header */
+  font-weight: bold; /* Emphasize the header */
+  padding-left: 10px; /* Adjust the value as needed */
+  background-color: rgba(172, 217, 151, 0.729); /* Light teal background */
+  color: rgb(1, 8, 21); /* White text color */
+  border-radius: 8px 8px 0px 0px !important; /* Rounded corners on top */
+}
+
+.card-header.decktitle {
+  font-weight: bold; /* Emphasize the header */
+  padding-left: 10px; /* Adjust the value as needed */
+  background-color: rgb(166, 216, 239); /* Light teal background */
+  color: rgb(1, 8, 21); /* White text color */
+  border-radius: 8px 8px 0px 0px !important; /* Rounded corners on top */
+}
+
+.card-header.topictitle {
+  font-weight: bold; /* Emphasize the header */
+  padding-left: 10px; /* Adjust the value as needed */
+  background-color: rgba(239, 239, 143, 0.729); /* Light teal background */
+  color: rgb(1, 8, 21); /* White text color */
+  border-radius: 8px 8px 0px 0px !important; /* Rounded corners on top */
+}
+
+.card-body {
+  width: 90rem;
+  height: auto;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg);
+  transition: transform 0.8s;
+}
+
+.card-content {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* Apply scrolling here */
+}
+
+.card-hint {
+  color: #585656;
+}
+
+.card-notes {
+  color: #585656;
+}
+
+.card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0.3rem;
+  background-color: white;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  /* font-size: large; */
+  box-shadow: 0 5px 10px rgba(199, 227, 230, 0.5),0 0px 0px rgba(85, 222, 235, 19);
+  box-sizing: border-box;
+  border: 2px solid lightblue; /* Thick, dark border */
+}
+
+.card-front {
+  transform: rotateX(0deg) translateZ(10rem);
+}
+
+.card-back {
+  transform: rotateX(120deg) translateZ(10rem);
+}
+
+.card-side {
+  transform: rotateX(240deg) translateZ(10rem);
+}
+
+.card-text {
+  font-size: 1.2rem;
+  font-weight: normal;
+  padding: 0.5rem;
+}
+
+.list-group {
+    list-style-type: none; /* Removes default list styling */
+    padding: 0;
+    margin: 0;
+}
+
+.list-group-item {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 4px; /* Adds spacing between items */
+    background-color: #f8f9fa; /* Light background */
+}
+
+.list-group-item:hover {
+    background-color: #e9ecef; /* Change background on hover */
+}
+
+.pagination .page-link {
+  color: #007bff;
+  transition: background-color 0.3s, color 0.3s;
+}
+.pagination .page-link:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+.pagination .page-item.active .page-link {
+  background-color: #93b9e2;
+  border-color: #86b5e8;
+}
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+}
+
+#searchForm {
+  transition: all 0.5s ease-in-out;
+  overflow: hidden;
+}
+
+.decks-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.deck {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  padding: 1px 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  text-decoration: none;
+}
+.deck button {
+  background: none;
+  border: none;
+  margin-left: 8px;
+  color: #842029;
+  cursor: pointer;
+}
+
+.auto-expand {
+  min-height: 40px;
+  max-height: 300px; /* Adjust as needed */
+  overflow-y: auto;
+}
+
+/* input[type="text"] {
+  padding: 8px;
+  width: 300px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+} */

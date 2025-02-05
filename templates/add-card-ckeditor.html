@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  <title>{{ header|safe }}</title>
+{% endblock %}
+
+{% block content %}
+  
+    <h2 class="mt-4"><strong>{{ header|safe }}</strong></h2>
+    <hr>
+    
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      {{ form.csrf_token }}
+      
+      <div title="Check to decalre the card as flippable">
+        <div>
+          {{ form.FLIPPABLE.label(class="form-label") }}
+          {{ form.FLIPPABLE(class="form-check-input") }}
+        </div>
+      </div>
+      <br>
+      
+      <div title="The title to be asked">
+        <div>
+          {{ form.TITLE.label(class="form-label") }}
+          {{ form.TITLE(class="form-control", style="border-radius: 0px;") }}
+        </div>
+      </div>
+      
+      <div title="The answer to the title">
+        <div>
+          {{ form.CONTENT.label(class="form-label") }}
+          {{ form.CONTENT(class="form-control", style="border-radius: 0px;") }}
+        </div>
+      </div>
+      
+      <div title="A hint to help answer the title">
+        <div>
+          {{ form.HINT.label(class="form-label") }}
+          {{ form.HINT(class="form-control", style="border-radius: 0px;") }}
+        </div>
+      </div>
+      
+      <div title="Additional notes or information">
+        <div>
+          {{ form.NOTES.label(class="form-label") }}
+          {{ form.NOTES(class="form-control", style="border-radius: 0px;") }}
+        </div>
+      </div>
+      
+      <div title="An image for the card">
+        <div>{{ form.IMAGE.label(class="form-label") }}</div>
+        {{ form.IMAGE(class="form-control", style="border-radius: 0px;") }}
+      </div>
+      <br>
+      
+      {% if "Edit Flashcard" in header %}
+        <div title="Generate image for the card">
+          <div>
+            <label for="generate_image" class="form-label">Generate Image</label>
+          </div>
+          <input type="text" name="IMAGE_PROMPT" id="generate_image" class="form-control" style="border-radius: 0px;" placeholder="Enter a prompt to generate an image">
+        </div>
+        <br>
+      {% endif %}
+      
+      <button type="submit" class="button custom-submit" title="Submit">
+          {{ form.SUBMIT.label }}
+      </button>
+      
+    </form>
+    {{ ckeditor.load() }}
+    {{ ckeditor.config() }}
+    
+{% endblock %}

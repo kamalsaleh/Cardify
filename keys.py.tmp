@@ -1,0 +1,20 @@
+# Flask Configuration
+SECRET_KEY= "0123456789"       # <--- Modify this
+
+# Set up the backup and images folders
+PROJECT_FOLDER= "{/path/to/where/you/cloned}/cardify" # <--- Modify this
+BACKUP_FOLDER= PROJECT_FOLDER + "/static/backups"
+IMAGES_FOLDER= PROJECT_FOLDER + "/static/images"
+GEN_IMAGES_FOLDER= PROJECT_FOLDER + "/static/gen_images"
+GRAPH_FILE= PROJECT_FOLDER + "/templates/graph.html"
+
+# AI & GOOGLE API Keys
+OPENAI_API_KEY= "sk-proj-*"    # <--- Modify this
+ANTHROPIC_API_KEY= "sk-ant-*"  # <--- Modify this
+SERP_API_KEY=""                # <--- Modify this
+
+# MySQL Configuration
+MYSQL_USER= ""                 # <--- Modify this
+MYSQL_PASSWORD= ""             # <--- Modify this
+MYSQL_HOST= "localhost"        # <--- Modify this if needed
+DATABASE_NAME= ""              # <--- Modify this

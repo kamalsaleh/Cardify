@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  <title>{{ header|safe }}</title>
+{% endblock %}
+
+{% block content %}
+  
+    <h2 class="mt-4"><strong>{{ header|safe }}</strong></h2>
+    <hr>
+    
+    {% if "Edit Flashcard" not in header %}
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="toggleGenerate" name="toggleGenerate">
+        <label class="form-check-label" for="toggleGenerate">
+          Generate Card
+        </label>
+      </div>
+      <br>
+    {% endif %}
+    
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      {{ form.csrf_token }}
+      
+      <input type="hidden" name="TOGGLE_GENERATE" id="toggle-generate-hidden" value="false">
+      
+      <div title="The title of the card">
+        <div class="card-header">
+          {{ form.TITLE.label(class="form-label") }}
+        </div>
+        <input type="text" name="TITLE" class="form-control" style="border-radius: 0px;"
+            placeholder="Enter the title of the card"
+            value= {% if form.TITLE.data %} "{{ form.TITLE.data }}" {% else %} "" {% endif %}>
+      </div>
+      <br>
+      
+      {% if "Edit Flashcard" not in header %}
+        <div id="generate-content-div" title="The content of the card">
+          <div class="card-header">
+              Generate Content
+          </div>
+          <input type="text" name="CONTENT_PROMPT" class="form-control" style="border-radius: 0px;"
+              placeholder="Enter a prompt to generate the content of the card">
+          <br>
+        </div>
+      {% endif %}
+      
+      <div id="content-div" title="The content of the card">
+        <div class="card-header">{{ form.CONTENT.label(class="form-label") }}</div>
+        
+        <!-- Container for Quill Editor for Response -->
+        <div id="content-editor-container"></div>
+        <!-- Hidden Input to Store Response Content -->
+        <input type="hidden" name="CONTENT" id="content-input">
+        <br>
+      </div>
+      
+      {% if "Edit Flashcard" not in header %}
+        <div id="generate-hint-div" title="The hint of the card">
+          <div class="card-header">
+              Generate Hint
+          </div>
+          <input type="text" name="HINT_PROMPT" class="form-control" style="border-radius: 0px;"
+              placeholder="Enter a prompt to generate a hint for the card">
+          <br>
+        </div>
+      {% endif %}
+      
+      <div id="hint-div" title="A hint to the content of the card">
+        <div class="card-header">
+          {{ form.HINT.label(class="form-label") }}
+        </div>
+        <input type="text" name="HINT" class="form-control" style="border-radius: 0px;"
+            placeholder="Enter a hint for the card"
+            value= {% if form.HINT.data %} "{{ form.HINT.data }}" {% else %} "" {% endif %}>
+        <br>
+      </div>
+      
+      {% if "Edit Flashcard" not in header %}
+        <div id="generate-notes-div" title="The notes of the card">
+          <div class="card-header">
+              Generate Notes
+          </div>
+          <input type="text" name="NOTES_PROMPT" class="form-control" style="border-radius: 0px;"
+              placeholder="Enter a prompt to generate notes for the card">
+          <br>
+        </div>
+      {% endif %}
+      
+      <div id="notes-div" title="Additional notes or information">
+        <div class="card-header">{{ form.NOTES.label(class="form-label") }}</div>
+        
+        <!-- Container for Quill Editor for Notes -->
+        <div id="notes-editor-container"></div>
+        <!-- Hidden Input to Store Notes Content -->
+        <input type="hidden" name="NOTES" id="notes-input">
+        <br>
+      </div>
+      
+      <div id="image-div" title="An image for the card">
+        <div class="card-header">{{ form.IMAGE.label(class="form-label") }}</div>
+        {{ form.IMAGE(class="form-control", style="border-radius: 0px;") }}
+        <br>
+      </div>
+      
+      
+      <button type="submit" class="button custom-submit" title="Submit">
+          {{ form.SUBMIT.label }}
+      </button>
+      
+    </form>
+    <br>
+  
+ <!-- Quill's JS -->
+ <script>
+  
+  // Initialize the variable to track character limit warning
+  var charLimitWarning = false;
+  
+  const contentQuill = new Quill('#content-editor-container', {
+    {% include "quill-editor-attributes.html" %}
+  } );
+  
+  const notesQuill = new Quill('#notes-editor-container', {
+    {% include "quill-editor-attributes.html" %}
+  } );
+  
+  {% if "Edit Flashcard" in header %}
+      
+      // Use dangerouslyPasteHTML to insert the title and content content into the editors
+      contentQuill.clipboard.dangerouslyPasteHTML({{ form.CONTENT.data|tojson|safe }});
+      notesQuill.clipboard.dangerouslyPasteHTML({{ form.NOTES.data|tojson|safe }});
+      
+  {% endif %}
+  
+  // Function to Set Hidden Input Values on Form Submit
+  document.querySelector('form').onsubmit = function() {
+      var contentValue = contentQuill.root.innerHTML;
+      var notesValue = notesQuill.root.innerHTML;
+      
+      // if the field is empty, set the value to an empty string
+      contentValue = contentValue === '<p><br></p>' ? '' : contentValue;
+      notesValue = notesValue === '<p><br></p>' ? '' : notesValue;
+      
+      // add to each p tag the following style="line-height: 1.2; margin-bottom: 0;"
+      contentValue = contentValue.replace(/<p>/g, '<p style="line-height: 1.2; margin-bottom: 0;">');
+      notesValue = notesValue.replace(/<p>/g, '<p style="line-height: 1.2; margin-bottom: 0;">');
+      
+      document.querySelector('#content-input').value = contentValue;
+      document.querySelector('#notes-input').value = notesValue;
+  };
+  
+  {% if "Edit Flashcard" not in header %}
+    // Function to toggle the generate the cards automatically
+    function toggleGenerateFunction() {
+      const toggleGenerate = document.getElementById('toggle-generate-hidden');
+      
+      const contentGenerate = document.getElementById('generate-content-div');
+      const content = document.getElementById('content-div');
+      
+      const hintGenerate = document.getElementById('generate-hint-div');
+      const hint = document.getElementById('hint-div');
+      
+      const notesGenerate = document.getElementById('generate-notes-div');
+      const notes = document.getElementById('notes-div');
+      
+      const image = document.getElementById('image-div');
+      
+      if (document.getElementById('toggleGenerate').checked) {
+        
+        toggleGenerate.value = 1;
+        
+        contentQuill.enable(false);
+        notesQuill.enable(false);
+        
+        contentGenerate.style.display = 'block';
+        content.style.display = 'none';
+        
+        hintGenerate.style.display = 'block';
+        hint.style.display = 'none';
+        
+        notesGenerate.style.display = 'block';
+        notes.style.display = 'none';
+        
+        image.style.display = 'none';
+      } else {
+        
+        toggleGenerate.value = 0;
+        
+        contentQuill.enable(true);
+        notesQuill.enable(true);
+        
+        contentGenerate.style.display = 'none';
+        content.style.display = 'block';
+        
+        hintGenerate.style.display = 'none';
+        hint.style.display = 'block';
+        
+        notesGenerate.style.display = 'none';
+        notes.style.display = 'block';
+        
+        image.style.display = 'block';
+      }
+    }
+    
+    // Call the function on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      toggleGenerateFunction();
+    });
+    
+    // Add event listener to the checkbox
+    document.getElementById('toggleGenerate').addEventListener('change', toggleGenerateFunction);
+  
+  {% endif %}
+</script>
+
+{% endblock %}

@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Card</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="flashcard-details">
+  <div class="image-wrapper">
+    {% if flashcard.image_id != 1 %}
+      <img src="{{ url_for('static', filename='images/' ~ flashcard.image.filename) }}" alt="Flashcard Image">
+    {% endif %}
+  </div>
+  
+  <div class="info-wrapper">
+    <small><strong>Card-ID:</strong><span style="color: #6c757d;"> &#x201C;{{ flashcard.id }}&#x201D;</span></small>
+    <br>
+    <small><strong>Added on:</strong><span style="color: #6c757d;"> {{ flashcard.add_date }}</span></small>
+    <br>
+    <small><strong>Last modified on:</strong><span style="color: #6c757d;"> {{ flashcard.last_modified_date }}</span></small>
+    <br>
+    <small><strong>Topics:</strong>
+      <span style="color: #6c757d;">
+        {% for topic in flashcard.topics() %}
+          <a href="{{ url_for('view_topic', id=topic.id) }}" class="topic-link text-decoration-none">
+            &#x201C;{{ topic.title }}&#x201D;
+          </a>
+          {% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </span>
+    </small>
+    <br>
+    <small>
+      <strong>Deck(s):</strong><span style="color: #6c757d;">
+        {% for deck in flashcard.decks() %}
+          <a href="{{ url_for('view_deck', id=deck.id) }}" class="deck-link text-decoration-none">
+            &#x201C;{{ deck.title }}&#x201D;
+          </a>
+          {% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </span>
+    </small>
+    <br>
+  </div>
+</div>
+<br>
+
+<!-- Flashcard Template -->
+<div class="card">
+  <!-- Card Header -->
+  <div class="card-header">
+    {{ flashcard.title|safe }}
+  </div>
+
+  <!-- Card Body -->
+  <div class="ql-editor flashcard">
+    {{ flashcard.content|safe }}
+  </div>
+  
+  {% if flashcard.hint or flashcard.notes %}
+    {% if flashcard.hint %}
+      <hr>
+      
+      <div class="ql-editor flashcard">
+        <em><strong>Hint:</strong></em>
+        {{ flashcard.hint|safe }}
+      </div>
+    {% endif %}
+    
+    {% if flashcard.notes %}
+      <div class="ql-editor flashcard">
+        <em><strong>Notes:</strong></em>
+        {{ flashcard.notes|safe }}
+      </div>
+    {% endif %}
+    
+  {% endif %}
+  
+</div>
+
+
+<div class="buttons-container">
+  
+    <button type="button" class="button view" title="View child cards" onclick="location.href='{{ url_for('poscards_graph', id=flashcard.id) }}'">
+      <i class="fa-solid fa-circle-nodes"></i>
+    </button>
+    
+    <button type="button" class="button view" title="View parent cards" onclick="location.href='{{ url_for('precards_graph', id=flashcard.id) }}'">
+      <i class="fa-solid fa-arrows-to-eye"></i>
+    </button>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+    <button type="submit" class="button update" title="Update card" onclick="location.href='{{ url_for('edit_card', id=flashcard.id) }}'">
+      <i class="fas fa-edit"></i>
+    </button>
+    
+    <button class="button update" onclick="location.href='{{ url_for('generate_card_image', id=flashcard.id) }}'" title="Generate image for the card">
+      <i class="fa-regular fa-image"></i>
+    </button>
+    
+    <button type="button" id="button-toggle" class="button update" title="Add/Drop Decks and Parent Cards" onclick="toggleAddDropSection()">
+      <i class="fas fa-toggle-off"></i>
+    </button>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <form action="{{ url_for('delete_card', id=flashcard.id) }}" method="POST" onsubmit="return confirmDelete();">
+        <button type="submit" class="button delete" title="Delete card">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+    </form>
+    
+</div>
+
+<div id="add-drop-decks-card-parents" style="display: none;">
+  <hr>
+  <div><h5>Add/Drop Decks:</h5></div>
+  <div class="buttons-container">
+    
+    <button class="button extend" onclick="addToDeck()" title="Add card to deck">
+      <i class="fas fa-plus"></i>
+    </button>
+    <select id="deckSelect1" style="font-family: 'Patrick Hand'; font-size: 12px;">
+      <option value=0>---</option>
+      {% for deck in decks %}
+        <option value="{{ deck.id }}">{{ deck.title + " / " + deck.topic.title }}</option>
+      {% endfor %}
+    </select>
+    &nbsp;&nbsp;&nbsp;
+    <button class="button drop" onclick="dropFromDeck()" title="Drop card from deck">
+      <i class="fas fa-minus"></i>
+    </button>
+    <select id="deckSelect2" style="font-family: 'Patrick Hand'; font-size: 12px;">
+      <option value=0>---</option>
+      {% for deck in flashcard.decks() %}
+        <option value="{{ deck.id }}">{{ deck.title + " / " + deck.topic.title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <br>
+  
+  <div><h5>Add/Drop Parent Cards:</h5></div>
+  <div class="buttons-container">
+    
+    <button class="button extend" onclick="addParentCard()" title="Specify parent card">
+      <i class="fas fa-plus"></i>
+    </button>
+    <select id="pre_card_Select1" style="font-family: 'Patrick Hand'; font-size: 12px;">
+      <option value=0>---</option>
+      {% for id in card_ids %}
+        <option value="{{ id }}">{{ "ID=" + id|string }}</option>
+      {% endfor %}
+    </select>
+    &nbsp;&nbsp;&nbsp;
+    <button class="button drop" onclick="dropParentCard()" title="Drop parent card">
+      <i class="fas fa-minus"></i>
+    </button>
+    <select id="pre_card_Select2" style="font-family: 'Patrick Hand'; font-size: 12px;">
+      <option value=0>---</option>
+      {% for card in current_pre_cards %}
+        <option value="{{ card.id }}">{{ card.title + " (ID=" + card.id|string + ")" }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+<br>
+
+<script>
+  addToDeck = async () => {
+    
+    var deck_id = document.getElementById("deckSelect1").value;
+    
+    if (deck_id == 0) {
+      alert("Please select a deck to add the card to.");
+      return;
+    }
+    
+    // create url '/add-deckentries/<int:deck_id>/<flashpre_card_ids>', methods=['POST']
+    var url = "/add-deckentries/" + deck_id + "/" + {{ flashcard.id }};
+    
+    const response = await fetch(url, {
+      method: 'POST',
+    });
+    
+    if (response.ok) {
+      location.reload();
+    } else {
+      alert("Failed to add card to deck.");
+    }
+    
+  }
+  
+  dropFromDeck = async () => {
+    
+    var deck_id = document.getElementById("deckSelect2").value;
+    
+    if (deck_id == 0) {
+      alert("Please select a deck to drop the card from.");
+      return;
+    }
+    
+    // create url '/drop-deckentries/<int:deck_id>/<flashpre_card_ids>', methods=['POST']
+    var url = "/delete-deckentries/" + deck_id + "/" + {{ flashcard.id }};
+    
+    const response = await fetch(url, {
+      method: 'POST',
+    });
+    
+    if (response.ok) {
+      location.reload();
+    } else {
+      alert("Failed to drop card from deck.");
+    }
+    
+  }
+  
+  
+  addParentCard = async () => {
+    
+    var pre_card_id = document.getElementById("pre_card_Select1").value;
+    
+    if (pre_card_id == 0) {
+      alert("Please select a parent card to add.");
+      return;
+    }
+    
+    var url = "/add-hierarchy/" + pre_card_id + "/" + {{ flashcard.id }};
+    
+    const response = await fetch(url, {
+      method: 'POST',
+    });
+    
+    if (response.ok) {
+      location.reload();
+    } else {
+      alert("Failed to add parent card.");
+    }
+    
+  }
+  
+  dropParentCard = async () => {
+    
+    var pre_card_id = document.getElementById("pre_card_Select2").value;
+    
+    if (pre_card_id == 0) {
+      alert("Please select a parent card to drop.");
+      return;
+    }
+    
+    // create url '/drop-precard/<int:pre_card_id>/<flashpre_card_ids>', methods=['POST']
+    var url = "/delete-hierarchy/" + pre_card_id + "/" + {{ flashcard.id }};
+    
+    const response = await fetch(url, {
+      method: 'POST',
+    });
+    
+    if (response.ok) {
+      location.reload();
+    } else {
+      alert("Failed to drop parent card.");
+    }
+    
+  }
+  
+  function toggleAddDropSection() {
+    var toggleButton = document.getElementById("button-toggle");
+    var section = document.getElementById("add-drop-decks-card-parents");
+    
+    if (section.style.display === "none" || section.style.display === "") {
+      section.style.display = "block";
+      toggleButton.innerHTML = '<i class="fas fa-toggle-on"></i>';
+    } else {
+      section.style.display = "none";
+      toggleButton.innerHTML = '<i class="fas fa-toggle-off"></i>';
+    }
+  }
+</script>
+{% endblock %}

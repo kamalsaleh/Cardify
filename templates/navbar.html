@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    
+
+    <div class="navbar-logo">
+      <a href="{{ url_for('home') }}" title="Home">
+        <img src="{{ url_for('static', filename='icons/decks.png') }}" alt="Logo">
+      </a>
+    </div>
+    
+    <ul class="navbar-nav ms-auto">
+          
+          <li style="margin-right: 20px;">
+              <a href="{{ url_for('browse_cards') }}" title="Browse Cards">
+                  <div class="navbar-item">
+                    <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Logo">
+                  </div>
+              </a>
+          </li>
+          <li style="margin-right: 20px;">
+              <a href="{{ url_for('browse_decks') }}" title="Decks">
+                  <div class="navbar-item">
+                    <img src="{{ url_for('static', filename='icons/deck.png') }}" alt="Logo">
+                  </div>
+              </a>
+          </li>
+          <li style="margin-right: 20px;">
+            <a href="{{ url_for('browse_topics') }}" title="Topics">
+                <div class="navbar-item">
+                  <img src="{{ url_for('static', filename='icons/topic.png') }}" alt="Logo">
+                </div>
+            </a>
+          </li>
+    </ul>
+</nav>
+

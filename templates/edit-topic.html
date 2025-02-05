@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>{{ header|safe }}</title>
+{% endblock %}
+
+{% block content %}
+  <h2 class="mt-4"><strong>{{ header|safe }}</strong></h2>
+  <hr>
+  
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        
+        <div title="The title of the topic">
+          <div class="card-header topictitle">{{ form.TITLE.label(class="form-label") }}</div>
+          {{ form.TITLE(class="form-control", style="border-radius: 0px;") }}
+        </div>
+        <br>
+        
+        <button type="submit" class="button custom-submit" title="Submit">
+          {{ form.SUBMIT.label }}
+        </button>
+    </form>
+{% endblock %}

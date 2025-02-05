@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  
+{% endblock %}
+
+{% block content %}
+
+<div class="card-container">
+  
+  <div class="card-wrapper">
+    <div class="card-body" id="card">
+        <div class="card-face card-front">
+            <div class="card-content">
+              <h2 class="card-title">Question</h2>
+              {{ flashcard.question|safe }}
+            </div>
+        </div>
+        <div class="card-face card-side">
+          <div class="card-content">
+            <h2 class="card-title">Hint</h2>
+            {{ flashcard.hint|safe }}
+          </div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-content">
+            <h2 class="card-title">Response</h2>
+            {{ flashcard.response|safe }}
+          </div>
+        </div>
+    </div>
+  </div>
+    
+  <div class="image-container">
+    <button class="toggle-button" onclick="toggleImage()">View Image</button>
+    <div class="image-wrapper" id="card-image" style="display: none;">
+        <img src="{{ url_for('static', filename='uploads/' ~ flashcard.image_filename) }}" alt="Flashcard Image">
+    </div>
+  </div>
+  
+</div>
+
+<div class="card-content">
+  <h2 class="card-title">Notes</h2>
+  {{ flashcard.notes|safe }}
+</div>
+
+<script src="{{ url_for('static', filename='js/flip-card.js') }}"></script>
+
+{% endblock %}

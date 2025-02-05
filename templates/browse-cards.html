@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>Browse Cards</title>
+{% endblock %}
+
+{% block content %}
+
+  {% if deck %}
+    {% set deck_id = deck.id %}
+  {% else %}
+    {% set deck_id = 0 %}
+  {% endif %}
+  
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mt-4">
+      <strong>Browse Cards</strong>
+      <button id="toggleFormBtn" class="btn btn-primary btn-sm ms-3">
+        <i class="fas fa-toggle-off"></i>
+      </button>
+    </h2>
+    
+    <a href="{{ url_for('add_card') }}" class="button extend" title="Create New Card" style="text-decoration: none;">
+      <strong><i class="fas fa-plus"></i> New Card</strong>
+    </a>
+    
+  </div>
+  <hr>
+  
+  <form id="searchForm" action="{{ url_for('browse_cards') }}" method="POST" style="display: none;">
+    
+    <label for="search_term">Search:</label>
+    <div class="mb-3">
+      <input type="text" class="form-control" id="searchTerm" name="search_term" placeholder="Filter by terms" value="{% if search_term %}{{ search_term }}{% endif %}">
+    </div>
+    
+    <label for="decks">Decks:</label>
+    <div class="mb-3">
+      
+      <div class="decks-container" id="decksContainer"></div>
+      <select id="deckInput" class="form-select">
+        <option value="" disabled selected>---</option>
+        {% for deck in alldecks %}
+          <option value="{{ deck }}">{{ deck }}</option>
+        {% endfor %}
+      </select>
+      
+      <!-- Hidden input to submit decks as a list -->
+      <input type="hidden" name="decks" id="hiddenDecks">
+    </div>
+    
+    <div id="searchLogicContainer" style="display: none;">
+      <label for="search_logic">Search Logic:</label>
+      <div class="mb-3">
+      <select name="search_logic" id="search_logic" class="form-select">
+        <option value="any" {% if search_logic == "any" %}selected{% endif %}>Match Any Tag (OR)</option>
+        <option value="all" {% if search_logic == "all" %}selected{% endif %}>Match All Tags (AND)</option>
+      </select>
+      </div>
+    </div>
+    
+    <!--select input to specify the number of pages-->
+    <label for="per_page">Per Page:</label>
+    <select class="form-select" id="perPage" name="per_page">
+      <option value="5" {% if flashcards.per_page == 5 %}selected{% endif %}>5</option>
+      <option value="10" {% if flashcards.per_page == 10 %}selected{% endif %}>10</option>
+      <option value="25" {% if flashcards.per_page == 25 %}selected{% endif %}>25</option>
+      <option value="50" {% if flashcards.per_page == 50 %}selected{% endif %}>50</option>
+      <option value="100" {% if flashcards.per_page == 100 %}selected{% endif %}>100</option>
+      <option value="500" {% if flashcards.per_page == 500 %}selected{% endif %}>500</option>
+      <option value="1000" {% if flashcards.per_page == 1000 %}selected{% endif %}>1000</option>
+    </select>
+    <br>
+    
+    <input type="hidden" name="deck_id" value="{{ deck_id }}">
+    <input type="hidden" id="page" name="page" value={{ flashcards.page }}>
+    
+    <button type="submit" class="button custom-submit">Search</button>
+    <hr>
+  </form>
+  
+  {% if deck %}
+    
+    <a href="{{ url_for('view_deck', id=deck_id) }}" class="card decktitle" title="View Deck" style="text-decoration: none;">
+      <div class="card-header decktitle">
+        <strong>Deck:</strong> &#x201C;{{ deck.title }}&#x201D;
+      </div>
+      <small class="text-muted">({{ deck.total() }} flashcards)</small>
+    </a>
+    <hr>
+  {% endif %}
+  
+  
+  {% if deck %}
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0px;">
+      <p>
+        Found <strong>{{ flashcards.total }}</strong> flashcard(s) in total
+      </p>
+      <div style="display: flex; justify-content: space-between;">
+        <form method="POST" onsubmit="addDeckEntries({{ deck.id }}, {{ flashcards.items|map(attribute='id')|list }}, 'searchForm'); return false;" style="margin: 0;">
+          <button type="submit" class="btn btn-link text-decoration-none text-success" title="Add visible cards to &#x201C;{{ deck.title }}&#x201D;">
+              <i class="fa-solid fa-circle-plus" style="font-size: 2em;"></i>
+          </button>
+        </form>
+        <form method="POST" onsubmit="deleteDeckEntries({{ deck.id }}, {{ flashcards.items|map(attribute='id')|list }}, 'searchForm'); return false;" style="margin: 0;">
+          <button type="submit" class="btn btn-link text-decoration-none text-warning" title="Drop visible cards from &#x201C;{{ deck.title }}&#x201D;">
+            <i class="fa-solid fa-circle-minus" style="font-size: 2em;"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <p>
+      Found <strong>{{ flashcards.total }}</strong> flashcard(s) in total
+    </p>
+  {% endif %}
+  
+  <div class="row">
+    {% for flashcard in flashcards.items %}
+      {% set in_deck = deck.id in flashcard.deck_ids() %}
+      <div class="col-md-4 mb-0">
+        <a a href="{{ url_for('view_card', id=flashcard.id) }}"
+            class="card"
+            style="text-decoration: none;"
+            title="View card"
+            >
+            
+            <div class="card-header">
+              <h5 class="mb-1">{{ flashcard.title|safe }}</h5>
+            </div>
+            
+            <div class="card-text d-flex w-100 justify-content-between">
+              <small class="text-muted">
+                Decks:
+                {% for title in flashcard.deck_titles() %}
+                  &#x201C;{{ title }}&#x201D;
+                  {% if not loop.last %}, {% endif %}
+                {% endfor %}
+              </small>
+              
+              {% if deck_id %}
+                  {% if in_deck %}
+                    <form method="POST" onsubmit="deleteDeckEntry({{ deck.id }}, {{ flashcard.id }}, 'searchForm'); return false;">
+                      <button type="submit" class="btn btn-link text-decoration-none text-warning" title="Drop from deck &#x201C;{{ deck.title }}&#x201D;">
+                        <i class="fa-solid fa-square-minus" style="font-size: 1.5em;"></i>
+                      </button>
+                    </form>
+                  {% else %}
+                    <form method="POST" onsubmit="addDeckEntry({{ deck.id }}, {{ flashcard.id }}, 'searchForm'); return false;">
+                      <button type="submit" class="btn btn-link text-decoration-none text-success" title="Add to deck &#x201C;{{ deck.title }}&#x201D;">
+                        <i class="fa-solid fa-square-plus" style="font-size: 1.5em;"></i>
+                      </button>
+                    </form>
+                  {% endif %}
+              {% endif %}
+            </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Pagination controls -->
+  <nav aria-label="Page navigation" class="mt-3">
+    <ul class="pagination justify-content-center">
+        {% if flashcards.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('browse_cards', search_term=search_term, search_logic=search_logic, deck_id=deck_id, per_page=flashcards.per_page, page=flashcards.prev_num) }}">Prev</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Prev</span>
+        </li>
+        {% endif %}
+      
+        {% for page_num in flashcards.iter_pages() %}
+          {% if page_num %}
+            <li class="page-item {% if page_num == flashcards.page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('browse_cards', search_term=search_term, search_logic=search_logic, deck_id=deck_id, per_page=flashcards.per_page, page=page_num) }}">{{ page_num }}</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link">&ctdot;</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+          
+        {% if flashcards.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('browse_cards', search_term=search_term, search_logic=search_logic, deck_id=deck_id, per_page=flashcards.per_page, page=flashcards.next_num) }}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+    </ul>
+  </nav>
+  <br>
+  
+  <script>
+    
+    // Show/Hide Search Form
+    toggleSearchForm();
+    
+    const searchTerm = document.getElementById("searchTerm");
+    const perPage = document.getElementById("perPage");
+    
+    // Reset the page number to 1 when changing the search term
+    searchTerm.addEventListener("change", function () {
+      document.getElementById("page").value = 1;
+    });
+    
+    // Reset the page number to 1 when changing the number of cards per page
+    perPage.addEventListener("change", function () {
+      document.getElementById("page").value = 1;
+    });
+    
+    // Tags Input
+    const decksContainer = document.getElementById("decksContainer");
+    const deckInput = document.getElementById("deckInput");
+    const hiddenDecks = document.getElementById("hiddenDecks");
+    const searchLogicContainer = document.getElementById("searchLogicContainer");
+    
+    let decks = 
+      {% if decks %}
+        '{{ decks }}'.split('|')
+      {% else %}
+        []
+      {% endif %};
+    
+    renderDecks();
+    updateHiddenDecks();
+    
+    // Add deck
+    function addDeck(deck) {
+      if (!decks.includes(deck.trim()) && deck.trim() !== "") {
+        decks.push(deck.trim());
+        renderDecks();
+        updateHiddenDecks(); // Update hidden input
+      }
+      // deckInput.value = "";
+    }
+  
+    // Remove deck
+    function removeDeck(deck) {
+      decks = decks.filter(t => t !== deck);
+      renderDecks();
+      updateHiddenDecks(); // Update hidden input
+    }
+  
+    // Render decks
+    function renderDecks() {
+      if (decks.length === 0) {
+        decksContainer.innerHTML = "";
+        searchLogicContainer.style.display = "none";
+      } else {
+        searchLogicContainer.style.display = "block";
+        decksContainer.innerHTML = decks.map(deck => `
+          <a href="#" class="deck" onclick="removeDeck('${deck}')">
+            ${deck} <button type="button" class="btn-sm btn-danger">X</button>
+          </a>
+        `).join("");
+    }
+    }
+    
+    // Update hidden input
+    function updateHiddenDecks() {
+      hiddenDecks.value = decks.join("|"); // Convert array to comma-separated string
+    }
+  
+    // Add deck on when selecting an options
+    deckInput.addEventListener("change", function() {
+      addDeck(deckInput.value);
+    });
+    
+  </script>
+{% endblock %}
