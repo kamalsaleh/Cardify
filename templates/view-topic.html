@@ -36,36 +36,47 @@
       <i class="fas fa-edit"></i>
     </button>
     
+    <button type="button" id="button-toggle" class="button update" title="Add/Drop Parent Topics" onclick="toggleAddDropSection()">
+      <i class="fas fa-toggle-off"></i>
+    </button>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
     <form action="{{ url_for('delete_topic', id=topic.id) }}" method="POST" onsubmit="return confirmDelete();">
         <button type="submit" class="button delete" title="Delete topic">
           <i class="fas fa-trash-alt"></i>
         </button>
     </form>
     
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    
-    <button class="button extend" onclick="addSuptopic()" title="Add a parent topic">
-      <i class="fas fa-plus"></i>
-    </button>
-    <select id="topicSelect1">
-      <option value=0>---</option>
-      {% for topic in fiesible_suptopics %}
-        <option value="{{ topic.id }}">{{ topic.title }}</option>
-      {% endfor %}
-    </select>
-    
-    <button class="button drop" onclick="dropSuptopic()" title="Drop a parent topic">
-      <i class="fas fa-minus"></i>
-    </button>
-    <select id="topicSelect2">
-      <option value=0>---</option>
-      {% for topic in suptopics %}
-        <option value="{{ topic.id }}">{{ topic.title }}</option>
-      {% endfor %}
-    </select>
-    
   </div>
   <hr>
+  
+  <div id="add-drop-parent-topics" style="display: none;">
+      <div><h5>Add/Drop Parent Topics:</h5></div>
+      
+      <div class="buttons-container">
+        <button class="button extend" onclick="addSuptopic()" title="Add a parent topic">
+          <i class="fas fa-plus"></i>
+        </button>
+        <select id="topicSelect1">
+          <option value=0>---</option>
+          {% for topic in fiesible_suptopics %}
+            <option value="{{ topic.id }}">{{ topic.title }}</option>
+          {% endfor %}
+        </select>
+        
+        <button class="button drop" onclick="dropSuptopic()" title="Drop a parent topic">
+          <i class="fas fa-minus"></i>
+        </button>
+        <select id="topicSelect2">
+          <option value=0>---</option>
+          {% for topic in suptopics %}
+            <option value="{{ topic.id }}">{{ topic.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <hr>
+  </div>
   
   <!--
   List all tags associated with the topic and provid a button to remove topic-tag associations
@@ -135,6 +146,19 @@
         alert("Failed to drop a parent topic.");
       }
       
+    }
+    
+    function toggleAddDropSection() {
+      var toggleButton = document.getElementById("button-toggle");
+      var section = document.getElementById("add-drop-parent-topics");
+      
+      if (section.style.display === "none" || section.style.display === "") {
+        section.style.display = "block";
+        toggleButton.innerHTML = '<i class="fas fa-toggle-on"></i>';
+      } else {
+        section.style.display = "none";
+        toggleButton.innerHTML = '<i class="fas fa-toggle-off"></i>';
+      }
     }
   </script>
   
