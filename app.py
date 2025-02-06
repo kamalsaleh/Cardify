@@ -511,12 +511,7 @@ def topic_graph(id):
     # net.show_buttons(filter_=['physics'])
     net.force_atlas_2based()
 
-    # Save the network as HTML
-    graph_filename = GRAPH_FILE
-    net.save_graph(graph_filename)
-
-    with open(graph_filename, 'r') as file:
-        html_content = file.read()
+    html_content = net.generate_html()
 
     custom_js = """
     <script>
@@ -537,14 +532,10 @@ def topic_graph(id):
       });
     </script>
     """
-
+    
     html_content = html_content.replace("</body>", custom_js + "</body>")
-
-    # Save the modified HTML
-    with open(graph_filename, "w") as file:
-        file.write(html_content)
-
-    return render_template("graph.html")
+    
+    return render_template("graph.html", html_content=html_content)
 
 @app.route('/deck-graph/<int:id>')
 def deck_graph(id):
@@ -626,13 +617,8 @@ def deck_graph(id):
     net.force_atlas_2based()
     #net.show_buttons(filter_=['physics'])
 
-    # Save the network as HTML
-    graph_filename = GRAPH_FILE
-    net.save_graph(graph_filename)
-
-    with open(graph_filename, 'r') as file:
-        html_content = file.read()
-
+    html_content = net.generate_html()
+    
     custom_js = """
     <script>
       // Add click event listener to nodes
@@ -652,14 +638,10 @@ def deck_graph(id):
       });
     </script>
     """
-
+    
     html_content = html_content.replace("</body>", custom_js + "</body>")
-
-    # Save the modified HTML
-    with open(graph_filename, "w") as file:
-        file.write(html_content)
-
-    return render_template("graph.html")
+    
+    return render_template("graph.html", html_content=html_content)
 
 @app.route('/poscards-graph/<int:id>')
 def poscards_graph(id):
@@ -729,12 +711,7 @@ def poscards_graph(id):
     net.force_atlas_2based()
     #net.show_buttons(filter_=['physics'])
 
-    # Save the network as HTML
-    graph_filename = GRAPH_FILE
-    net.save_graph(graph_filename)
-
-    with open(graph_filename, 'r') as file:
-        html_content = file.read()
+    html_content = net.generate_html()
 
     custom_js = """
     <script>
@@ -755,14 +732,10 @@ def poscards_graph(id):
       });
     </script>
     """
-
+    
     html_content = html_content.replace("</body>", custom_js + "</body>")
-
-    # Save the modified HTML
-    with open(graph_filename, "w") as file:
-        file.write(html_content)
-
-    return render_template("graph.html")
+    
+    return render_template("graph.html", html_content=html_content)
 
 @app.route('/precards-graph/<int:id>')
 def precards_graph(id):
@@ -832,12 +805,7 @@ def precards_graph(id):
     net.force_atlas_2based()
     # net.show_buttons(filter_=['physics'])
 
-    # Save the network as HTML
-    graph_filename = GRAPH_FILE
-    net.save_graph(graph_filename)
-
-    with open(graph_filename, 'r') as file:
-        html_content = file.read()
+    html_content = net.generate_html()
 
     custom_js = """
     <script>
@@ -858,14 +826,10 @@ def precards_graph(id):
       });
     </script>
     """
-
+    
     html_content = html_content.replace("</body>", custom_js + "</body>")
-
-    # Save the modified HTML
-    with open(graph_filename, "w") as file:
-        file.write(html_content)
-
-    return render_template("graph.html")
+    
+    return render_template("graph.html", html_content=html_content)
 
 @app.route('/add-card', methods=['GET', 'POST'])
 def add_card():
