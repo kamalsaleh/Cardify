@@ -214,7 +214,7 @@ transform: translateY(-2px);
 }
 
 .image-wrapper img {
-  max-width: 300px; /* Limit the image width */
+  max-width: 250px; /* Limit the image width */
   height: auto; /* Maintain aspect ratio */
   border-radius: 8px; /* Add rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the image */
