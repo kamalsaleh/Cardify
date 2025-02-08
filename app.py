@@ -302,7 +302,7 @@ class DeckEntry(db.Model):
 
 @app.route('/')
 def home():
-  return redirect(url_for('browse_cards'))
+  return render_template('home.html')
 
 @app.route('/view-topic/<int:id>', methods=['GET'])
 def view_topic(id):
