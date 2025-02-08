@@ -1143,12 +1143,11 @@ def add_deckentries(deck_id, flashcard_ids):
           db.session.add(deckentry)
 
       db.session.commit()
-      flash('Card(s) added to deck successfully!', 'success')
+      #flash('Card(s) added to deck successfully!', 'success')
+    
+    return jsonify({"ok": True})
 
-    #return jsonify({"success": True})
-    return redirect(url_for('view_deck', id=deck_id))
-
-@app.route('/delete-deckentries/<int:deck_id>/<flashcard_ids>', methods=['POST', 'DELETE'])
+@app.route('/delete-deckentries/<int:deck_id>/<flashcard_ids>', methods=['DELETE'])
 def delete_deckentries(deck_id, flashcard_ids):
 
     flashcard_ids = [int(flashcard_id) for flashcard_id in flashcard_ids.split(',')]
@@ -1160,9 +1159,10 @@ def delete_deckentries(deck_id, flashcard_ids):
           db.session.delete(deckentry)
 
       db.session.commit()
-
-    #return jsonify({"success": True})
-    return redirect(url_for('view_deck', id=deck_id))
+      #flash('Card(s) removed from deck successfully!', 'success')
+    
+    return jsonify({"ok": True})
+    
 
 @app.route('/delete-deckentry/<int:deck_id>/<int:flashcard_id>', methods=['POST', 'DELETE'])
 def delete_deckentry(deck_id, flashcard_id):
@@ -1185,7 +1185,7 @@ def view_deck(id):
 
 @app.route('/browse-decks', methods=['GET', 'POST'])
 def browse_decks():
-
+  
   if request.method == 'POST':
     search_term = request.form.get('search_term', '')
     page = request.form.get('page', 1, type=int)
@@ -1194,17 +1194,17 @@ def browse_decks():
     search_term = request.args.get('search_term', '')
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', app.config['PER_PAGE'], type=int)
-
-  decks = Deck.query
-
+  
+  decks = Deck.query.order_by(Deck.id.desc())
+  
   if search_term:
     decks = decks.filter(
         Deck.title.ilike(f"%{search_term}%") |
         Deck.description.ilike(f"%{search_term}%")
       )
-
+  
   decks = decks.paginate(page=page, per_page=per_page, error_out=False)
-
+  
   return render_template('browse-decks.html',
             search_term=search_term,
             decks=decks,

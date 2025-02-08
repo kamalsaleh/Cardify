@@ -16,12 +16,34 @@ addDeckEntries = async (deckId, flashcardIds, formID) => {
   
   if (response.ok) {
     
-    const form = document.getElementById(formID);
-    
-    if (form) {
-      form.submit(); // Submit the form to reflect the changes
+    if (flashcardIds.length === 1) {
+      
+      const total = document.getElementById('deck-total');
+      
+      if (total) {
+        total.textContent = parseInt(total.textContent) + flashcardIds.length;
+      }
+      
+      const actions = document.getElementById(`deck-${deckId}-flashcard-${flashcardIds[0]}-actions`);
+      
+      if (actions) {
+        actions.innerHTML = `
+      <button type="button" class="button drop"
+        title="Remove from deck"
+        onclick="deleteDeckEntry(${deckId}, ${flashcardIds[0]}, 'searchForm'); return false;">
+        <i class="fas fa-minus" ></i>
+      </button>
+      `;
+      }
     } else {
-      location.reload();
+      
+      const form = document.getElementById(formID);
+      
+      if (form) {
+        form.submit(); // Submit the form to reflect the changes
+      } else {
+        location.reload();
+      }
     }
   } else {
     alert('Failed to add deck entrie(s).');
@@ -40,17 +62,47 @@ deleteDeckEntries = async (deckId, flashcardIds, formID) => {
   const url = `/delete-deckentries/${deckId}/${flashcardIds.join(',')}`;
   
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'DELETE',
   });
   
   if (response.ok) {
     
-    const form = document.getElementById(formID);
-    
-    if (form) {
-      form.submit(); // Submit the form to reflect the changes
+    // to avoid page reload, remove the flashcard entries from the page
+    if (flashcardIds.length === 1) {
+      
+      const flashcard = document.getElementById(`flashcard-${flashcardIds[0]}`);
+      
+      if (flashcard) {
+        flashcard.remove();
+      }
+      
+      const total = document.getElementById('deck-total');
+      
+      if (total) {
+        total.textContent = parseInt(total.textContent) - flashcardIds.length;
+      }
+      
+      const actions = document.getElementById(`deck-${deckId}-flashcard-${flashcardIds[0]}-actions`);
+      
+      if (actions) {
+        actions.innerHTML = `
+      <button type="button" class="button extend"
+        title="Add to deck"
+        onclick="addDeckEntry(${deckId}, ${flashcardIds[0]}, 'searchForm'); return false;">
+        <i class="fas fa-plus" ></i>
+      </button>
+      `;
+      }
     } else {
-      location.reload();
+      
+      const form = document.getElementById(formID);
+      
+      if (form) {
+        form.submit(); // Submit the form to reflect the changes
+      } else {
+        location.reload();
+      }
+      
     }
   } else {
     alert('Failed to delete deck entrie(s).');

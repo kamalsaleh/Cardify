@@ -50,26 +50,32 @@
   </div>
   <hr>
   
-  <div style="display: flex; align-items: center; justify-content: flex-start; gap: 0px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 0px;">
     <p style="margin: 0;">
-      Contains <strong>{{ deck.total() }}</strong> flashcard(s)
+      Contains <strong><span id="deck-total">{{ deck.total() }}</span></strong> flashcard(s)
     </p>
     
     {% if deck.total() != 0 %}
-      <form method="POST" onsubmit="deleteDeckEntries({{ deck.id }}, {{ deck.deckentries|map(attribute='flashcard_id')|list }}, ''); return false;" style="margin: 0;">
-        <button type="submit" class="btn btn-link text-decoration-none text-warning" title="Drop all cards from &#x201C;{{ deck.title }}&#x201D;">
-          <i class="fa-solid fa-circle-minus" style="font-size: 2em;"></i>
+      <div>
+        <button type="button"
+                class="button drop"
+                title="Drop all cards from &#x201C;{{ deck.title }}&#x201D;"
+                onclick="deleteDeckEntries({{ deck.id }}, {{ deck.deckentries|map(attribute='flashcard_id')|list }}, '');">
+            <i class="fa-solid fa-folder-minus"></i>
         </button>
-      </form>
+        &nbsp;&nbsp;&nbsp;
+      </div>
     {% endif %}
     
   </div>
+  <br>
   
   <div class="list-group">
     
     {% for deckentry in deck.deckentries %}
         <a href="{{ url_for('view_card', id=deckentry.flashcard_id) }}"
             class="list-group-item list-group-item-action py-1 px-3"
+            id="flashcard-{{ deckentry.flashcard_id }}"
             style="border: 1px solid black"
             title="{{ deckentry.flashcard.content_text() }}"
             >
@@ -77,8 +83,8 @@
             <strong>{{ deckentry.flashcard.title|safe }}</strong>
             
             <form method="POST" onsubmit="deleteDeckEntry({{ deck.id }}, {{ deckentry.flashcard_id }}, ''); return false;">
-              <button type="submit" class="btn btn-link text-decoration-none text-warning" title="Drop from deck &#x201C;{{ deck.title }}&#x201D;">
-                <i class="fa-solid fa-square-minus" style="font-size: 1.5em;"></i>
+              <button type="submit" class="button drop" title="Drop from deck &#x201C;{{ deck.title }}&#x201D;">
+                <i class="fas fa-minus"></i>
               </button>
             </form>
             

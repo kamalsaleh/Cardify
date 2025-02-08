@@ -85,7 +85,9 @@
       <div class="card-header decktitle">
         <strong>Deck:</strong> &#x201C;{{ deck.title }}&#x201D;
       </div>
-      <small class="text-muted">({{ deck.total() }} flashcards)</small>
+      <small class="text-muted">
+        (<span id="deck-total">{{ deck.total() }}</span> flashcards)
+      </small>
     </a>
     <hr>
   {% endif %}
@@ -97,16 +99,15 @@
         Found <strong>{{ flashcards.total }}</strong> flashcard(s) in total
       </p>
       <div style="display: flex; justify-content: space-between;">
-        <form method="POST" onsubmit="addDeckEntries({{ deck.id }}, {{ flashcards.items|map(attribute='id')|list }}, 'searchForm'); return false;" style="margin: 0;">
-          <button type="submit" class="btn btn-link text-decoration-none text-success" title="Add visible cards to &#x201C;{{ deck.title }}&#x201D;">
-              <i class="fa-solid fa-circle-plus" style="font-size: 2em;"></i>
-          </button>
-        </form>
-        <form method="POST" onsubmit="deleteDeckEntries({{ deck.id }}, {{ flashcards.items|map(attribute='id')|list }}, 'searchForm'); return false;" style="margin: 0;">
-          <button type="submit" class="btn btn-link text-decoration-none text-warning" title="Drop visible cards from &#x201C;{{ deck.title }}&#x201D;">
-            <i class="fa-solid fa-circle-minus" style="font-size: 2em;"></i>
-          </button>
-        </form>
+        <button type="button" class="button extend" title="Add visible cards to &#x201C;{{ deck.title }}&#x201D;" onclick="addDeckEntries({{ deck.id }}, {{ flashcards.items|map(attribute='id')|list }}, 'searchForm'); return false;">
+            <i class="fa-solid fa-folder-plus"></i>
+        </button>
+        
+        &nbsp;
+        
+        <button type="button" class="button drop" title="Drop visible cards from &#x201C;{{ deck.title }}&#x201D;" onclick="deleteDeckEntries({{ deck.id }}, {{ flashcards.items|map(attribute='id')|list }}, 'searchForm'); return false;">
+          <i class="fa-solid fa-folder-minus"></i>
+        </button>
       </div>
     </div>
   {% else %}
@@ -139,19 +140,21 @@
               </small>
               
               {% if deck_id %}
+                <div id="deck-{{ deck.id }}-flashcard-{{ flashcard.id }}-actions">
                   {% if in_deck %}
-                    <form method="POST" onsubmit="deleteDeckEntry({{ deck.id }}, {{ flashcard.id }}, 'searchForm'); return false;">
-                      <button type="submit" class="btn btn-link text-decoration-none text-warning" title="Drop from deck &#x201C;{{ deck.title }}&#x201D;">
-                        <i class="fa-solid fa-square-minus" style="font-size: 1.5em;"></i>
-                      </button>
-                    </form>
+                    <button type="button" class="button drop"
+                            title="Drop from deck &#x201C;{{ deck.title }}&#x201D;"
+                            onclick="deleteDeckEntry({{ deck.id }}, {{ flashcard.id }}, ''); return false;">
+                      <i class="fas fa-minus"></i>
+                    </button>
                   {% else %}
-                    <form method="POST" onsubmit="addDeckEntry({{ deck.id }}, {{ flashcard.id }}, 'searchForm'); return false;">
-                      <button type="submit" class="btn btn-link text-decoration-none text-success" title="Add to deck &#x201C;{{ deck.title }}&#x201D;">
-                        <i class="fa-solid fa-square-plus" style="font-size: 1.5em;"></i>
-                      </button>
-                    </form>
+                    <button type="button" class="button extend"
+                            title="Add to deck &#x201C;{{ deck.title }}&#x201D;"
+                            onclick="addDeckEntry({{ deck.id }}, {{ flashcard.id }}, ''); return false;">
+                      <i class="fas fa-plus"></i>
+                    </button>
                   {% endif %}
+                </div>
               {% endif %}
             </div>
         </a>

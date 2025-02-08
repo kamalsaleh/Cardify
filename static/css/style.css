@@ -129,12 +129,12 @@ transform: translateY(-2px);
 }
 
 .button.drop {
-  background-color: #f4bd6a;
+  background-color: #f3bc06;
   color: white;
 }
 
 .button.drop:hover {
-background-color: #cb9201;
+background-color: #d68c02;
 transform: translateY(-2px);
 }
 

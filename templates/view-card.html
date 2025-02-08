@@ -204,7 +204,7 @@
     var url = "/delete-deckentries/" + deck_id + "/" + {{ flashcard.id }};
     
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'DELETE',
     });
     
     if (response.ok) {
