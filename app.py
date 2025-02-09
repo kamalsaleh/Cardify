@@ -1343,7 +1343,7 @@ def browse_topics():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', app.config['PER_PAGE'], type=int)
 
-  topics = Topic.query
+  topics = Topic.query.order_by(Topic.id.desc())
 
   if search_term:
     topics = topics.filter(Topic.title.ilike(f"%{search_term}%"))
