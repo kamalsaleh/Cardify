@@ -8,7 +8,7 @@ import shutil
 from bs4 import BeautifulSoup
 from pyvis.network import Network
 from ai_tools import generate_image, generate_card
-from keys import SECRET_KEY, MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, DATABASE_NAME, BACKUP_FOLDER, IMAGES_FOLDER, GEN_IMAGES_FOLDER, GRAPH_FILE
+from keys import SECRET_KEY, MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, DATABASE_NAME, BACKUP_FOLDER, IMAGES_FOLDER, GEN_IMAGES_FOLDER
 import mysql.connector
 
 app = Flask(__name__)
