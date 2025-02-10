@@ -21,6 +21,7 @@ Cardify is a Flask-based web application designed to assit you create, manage, a
    ```bash
    pip install -r requirements.txt
    ```
+  Step 3 is optional. If no mysql database is used, an sqlite will be created.
 
 3. Set up a new MySQL database:
     - Access MySQL command line:
@@ -51,13 +52,13 @@ Cardify is a Flask-based web application designed to assit you create, manage, a
     mysql -u your_mysql_user -p
     ```
 
-4. Copy/Rename the file `keys.py.tmp` to `keys.py` and add the following content:
-  ```python
-  MYSQL_USER = 'your_mysql_user'
-  MYSQL_PASSWORD = 'your_mysql_password'
-  MYSQL_HOST = 'localhost' # adjust if needed
-  DATABASE_NAME = 'your_database_name'
-  ```
+    - Copy/Rename the file `keys.py.tmp` to `keys.py` and add the following content:
+    ```python
+    MYSQL_USER = 'your_mysql_user'
+    MYSQL_PASSWORD = 'your_mysql_password'
+    MYSQL_HOST = 'localhost' # adjust if needed
+    DATABASE_NAME = 'your_database_name'
+    ```
 
 5. If you have an OpenAI key, add it to the `keys.py` file:
   ```python

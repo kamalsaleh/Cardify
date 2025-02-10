@@ -16,24 +16,6 @@ app = Flask(__name__)
 # Set up the secret key
 app.config['SECRET_KEY'] = SECRET_KEY
 
-# Step 1: Connect to MySQL and create the database if it doesn’t exist
-def create_database():
-    connection = mysql.connector.connect(
-        host=MYSQL_HOST,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD
-    )
-    cursor = connection.cursor()
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DATABASE_NAME}")
-    cursor.close()
-    connection.close()
-
-create_database()
-
-# Set up the MYSQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{DATABASE_NAME}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 # Set up the upload folder
 app.config['BACKUP_FOLDER'] = BACKUP_FOLDER
 app.config['IMAGES_FOLDER'] = IMAGES_FOLDER
@@ -299,6 +281,33 @@ class DeckEntry(db.Model):
 
   def __repr__(self):
       return f'<DeckEntry: flashcard_id={self.flashcard_id}, title={self.deck_id!r}>'
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+if (MYSQL_USER and MYSQL_PASSWORD and MYSQL_HOST and DATABASE_NAME):
+  # Connect to MySQL and create the database if it doesn’t exist
+  def create_database():
+      connection = mysql.connector.connect(
+          host=MYSQL_HOST,
+          user=MYSQL_USER,
+          password=MYSQL_PASSWORD
+      )
+      cursor = connection.cursor()
+      cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DATABASE_NAME}")
+      cursor.close()
+      connection.close()
+  
+  create_database()
+  
+  # Set up the MYSQL database
+  app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{DATABASE_NAME}"
+else:
+  # Set up the SQLite database
+  app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flashcards.db'
+
+# Create the database tables if they don't exist
+with app.app_context():
+  db.create_all()
 
 @app.route('/')
 def home():
@@ -1365,5 +1374,5 @@ def backup():
   return render_template('backup.html')
 
 if __name__ == '__main__':
-
+  
   app.run(debug=True)
