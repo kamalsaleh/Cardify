@@ -1,6 +1,7 @@
 # Cardify App
 
 Cardify is a Flask-based web application designed to assit you create, manage, and utilize flashcards for learning, memorization, planning tasks, etc.
+A Demo-website can be found here: [Cardify-Demo](https://cardify-demo-kamalsaleh.eu.pythonanywhere.com/).
 
 ## Features
 - Create flashcards with custom fields: title, content, hint, notes and image.
