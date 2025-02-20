@@ -1,6 +1,7 @@
 # Cardify App
 
 Cardify is a Flask-based web application designed to assit you create, manage, and utilize flashcards for learning, memorization, planning tasks, etc.
+A Demo-website can be found here: [Cardify-Demo](https://cardify-demo-kamalsaleh.eu.pythonanywhere.com/).
 
 ## Features
 - Create flashcards with custom fields: title, content, hint, notes and image.
@@ -51,22 +52,22 @@ Cardify is a Flask-based web application designed to assit you create, manage, a
     mysql -u your_mysql_user -p
     ```
 
-4. Copy/Rename the file `keys.py.tmp` to `keys.py` and add the following content:
-  ```python
-  MYSQL_USER = 'your_mysql_user'
-  MYSQL_PASSWORD = 'your_mysql_password'
-  MYSQL_HOST = 'localhost' # adjust if needed
-  DATABASE_NAME = 'your_database_name'
-  ```
+    - Copy/Rename the file `keys.py.tmp` to `keys.py` and add the following content:
+    ```python
+    MYSQL_USER = 'your_mysql_user'
+    MYSQL_PASSWORD = 'your_mysql_password'
+    MYSQL_HOST = 'localhost' # adjust if needed
+    DATABASE_NAME = 'your_database_name'
+    ```
 
-5. If you have an OpenAI key, add it to the `keys.py` file:
+4. If you have an OpenAI key, add it to the `keys.py` file:
   ```python
   OPENAI_API_KEY = 'your_openai_api_key'
   ```
 
-6. Run the application:
+5. Run the application:
    ```bash
    flask run
    ```
 
-7. Open the application in your browser at `http://127.0.0.1:5000`.
+6. Open the application in your browser at `http://127.0.0.1:5000`.
